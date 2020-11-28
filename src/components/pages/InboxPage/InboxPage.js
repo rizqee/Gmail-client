@@ -4,7 +4,7 @@ import {MessageListPage} from '../MessageListPage'
 import {PageWrapper} from '../PageWrapper'
 
 const InboxPage = () => (
-  <PageWrapper title="Входящие - Gmail">
+  <PageWrapper title="Inbox - Gmail">
     <MessageListPage listName='INBOX'/>
   </PageWrapper>
 );

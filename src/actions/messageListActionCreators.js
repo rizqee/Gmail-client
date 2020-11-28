@@ -34,7 +34,7 @@ const receiveMessageList = (messageListName, pageToken, onRequest, onSuccess) =>
   }).execute(response => {
     let promise = new Promise((resolve, reject) => {
       let messages = [];
-      let counter = response.messages.length;
+      let counter = response.messages?response.messages.length:0;
       response.messages.forEach(message => {
         gapi.client.gmail.users.messages.get({
           userId: 'me',

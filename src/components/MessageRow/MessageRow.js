@@ -7,7 +7,7 @@ import renderHtml from 'react-render-html'
 import {ContextMenu, ContextMenuTrigger, MenuItem} from "react-contextmenu";
 import PropTypes from 'prop-types'
 import 'moment-timezone';
-import 'moment/locale/ru';
+import 'moment/locale/id';
 
 import {deleteMessage} from '../../actions/messageListActionCreators'
 import './react-contextmenu.css'
@@ -29,14 +29,14 @@ const MessageRow = ({deleteMessage, message}) => (
           </Col>
           <Col sm={1}>
             <i>
-              <Moment locale={'ru'} fromNow date={getHeader(message, 'Date')}/>
+              <Moment locale={'en'} fromNow date={getHeader(message, 'Date')}/>
             </i>
           </Col>
         </Row>
       </ContextMenuTrigger>
 
       <ContextMenu id={message.id}>
-        <MenuItem onClick={() => deleteMessage(message)}>Удалить</MenuItem>
+        <MenuItem onClick={() => deleteMessage(message)}>delete</MenuItem>
       </ContextMenu>
     </ListGroupItem>
   </LinkContainer>

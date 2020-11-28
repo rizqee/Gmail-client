@@ -7,7 +7,7 @@ export const loadGapi = () => dispatch => {
   gapi.load('client:auth2', () => {
     gapi.client.init({
       discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"],
-      clientId: '913025185621-6nbrr0f0v4u1n3eep4ft62n8tei9tt6o.apps.googleusercontent.com',
+      clientId: '734429373291-63lp03n6sotalp6p817b24ap41eo4vo6.apps.googleusercontent.com',
       scope: 'https://www.googleapis.com/auth/gmail.readonly' +
             ' https://www.googleapis.com/auth/gmail.send' +
             ' https://www.googleapis.com/auth/gmail.modify'

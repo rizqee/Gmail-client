@@ -86,11 +86,11 @@ class SendPage extends Component {
     };
 
     return (
-      <PageWrapper title='Написать - Gmail'>
+      <PageWrapper title='Send - Gmail'>
         <form onSubmit={this.onSubmit}>
           <FormGroup>
             <FormControl
-              placeholder='Получатель'
+              placeholder='Receiver'
               type='email'
               name='to'
               vale={this.state.to}
@@ -100,7 +100,7 @@ class SendPage extends Component {
           </FormGroup>
           <FormGroup>
             <FormControl
-              placeholder='Тема'
+              placeholder='Subject'
               name='subject'
               value={this.state.subject}
               onChange={this.onChange}
@@ -125,7 +125,7 @@ class SendPage extends Component {
                 Перетащите сюда файлы, чтобы прикрепить их к письму...
               </div>}
               <FormControl
-                placeholder='Сообщение'
+                placeholder='Content'
                 name='message'
                 value={this.state.message}
                 onChange={this.onChange}
@@ -154,7 +154,7 @@ class SendPage extends Component {
             <Button onClick={() => {
               dropzoneRef.open()
             }}>
-              Приложить файлы
+              Attach File
             </Button>
 
             <Button
@@ -163,7 +163,7 @@ class SendPage extends Component {
               type='submit'
               disabled={this.props.isLoading}
             >
-              Отправить
+              Submit
             </Button>
           </FormGroup>
         </form>

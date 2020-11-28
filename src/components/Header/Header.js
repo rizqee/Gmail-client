@@ -14,18 +14,18 @@ const Header = (props) => (
           <a><i className="fa fa-envelope-o fa-lg"/></a>
         </IndexLinkContainer>
       </Navbar.Brand>
-      <Navbar.Toggle/>
+      <Navbar.Toggle />
     </Navbar.Header>
     <Navbar.Collapse>
       <Nav>
         <LinkContainer to='/inbox'>
-          <NavItem>Входящие</NavItem>
+          <NavItem>inbox</NavItem>
         </LinkContainer>
         <LinkContainer to='/sent'>
-          <NavItem>Отправленные</NavItem>
+          <NavItem>sent</NavItem>
         </LinkContainer>
         <LinkContainer to='/send'>
-          <NavItem>Написать</NavItem>
+          <NavItem>send</NavItem>
         </LinkContainer>
       </Nav>
       <Navbar.Form pullRight>
