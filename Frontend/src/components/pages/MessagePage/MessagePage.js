@@ -84,7 +84,6 @@ class MessagePage extends Component {
     }).catch(error=>{
       console.log(error)
     })
-    this.setState({showDecrypt:false})
     
   }
   handleSigniture(){
