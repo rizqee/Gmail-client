@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import renderHtml from 'react-render-html'
-import {Button, ButtonGroup, FormControl, FormGroup, ListGroup, ListGroupItem, Panel} from 'react-bootstrap'
+import {Button, ButtonGroup, FormControl, FormGroup, ListGroup, ListGroupItem, Panel,Modal,ControlLabel} from 'react-bootstrap'
 import Dropzone from 'react-dropzone'
 import filesize from 'filesize'
 
@@ -16,16 +16,25 @@ class MessagePage extends Component {
     super(props);
 
     this.state = this.getInitialState();
-
     this.onReplyChange = this.onReplyChange.bind(this);
     this.onSendReply = this.onSendReply.bind(this);
+    this.handleChangeKey = this.handleChangeKey.bind(this);
+    this.handleChangeSignKey = this.handleChangeSignKey.bind(this);
+    this.handleDecrypt = this.handleDecrypt.bind(this)
+    this.handleSigniture = this.handleSigniture.bind(this)
   }
 
   getInitialState() {
     return {
       reply: '',
       attachments: [],
-      dropzoneActive: false
+      dropzoneActive: false,
+      dropzoneKeyActive:false,
+      showDecrypt:false,
+      showSign:false,
+      keyValue:"",
+      signKey:"",
+      plaintext:""
     };
   }
 
@@ -54,10 +63,49 @@ class MessagePage extends Component {
     }
   }
 
+  handleDecrypt(){
+    
+  }
+  handleSigniture(){
+    this.setState({showSign:true})
+  }
+  onDropKey(files) {
+    this.setState({dropzoneKeyActive: false});
+    for (let i = 0; i < files.length; i++) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.setState({
+          keyValue:reader.result
+        })
+      };
+      reader.readAsText(files[i]);
+    }
+  }
+
+  onDropKeySign(files) {
+    this.setState({dropzoneKeyActive: false});
+    for (let i = 0; i < files.length; i++) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.setState({
+          signKey:reader.result
+        })
+      };
+      reader.readAsText(files[i]);
+    }
+  }
+
   removeAttachment(file) {
     this.setState({
       attachments: this.state.attachments.filter(item => item !== file)
     })
+  }
+
+  handleChangeKey(e){
+    this.setState({keyValue:e.target.value})
+  }
+  handleChangeSignKey(e){
+    this.setState({signKey:e.target.value})
   }
 
   onReplyChange(e) {
@@ -74,7 +122,7 @@ class MessagePage extends Component {
 
   render() {
     let dropzoneRef;
-
+    const handleClose =()=>this.setState({showDecrypt:false,showSign:false})
     const dropzoneOverlayStyle = {
       position: 'absolute',
       top: 0,
@@ -127,6 +175,19 @@ class MessagePage extends Component {
             </Panel>
             <form onSubmit={this.onSendReply}>
               <FormGroup>
+                <Button
+                  onClick ={()=> this.setState({showDecrypt:true})}
+                >
+                  Decrypt
+                </Button>
+                <Button
+                  onClick ={()=> this.setState({showSign:true})}
+                  style = {{marginLeft:"1vw"}}
+                >
+                  Confirm Signature
+                </Button>
+              </FormGroup>
+              <FormGroup>
                 <Dropzone
                   disableClick
                   style={{position: "relative"}}
@@ -138,10 +199,10 @@ class MessagePage extends Component {
                   }}
                 >
                   {this.state.dropzoneActive && <div style={dropzoneOverlayStyle}>
-                    Перетащите сюда файлы, чтобы прикрепить их к письму...
+                    Drag and drop files here to attach them to your email ...
                   </div>}
                   <FormControl
-                    placeholder='Conent'
+                    placeholder='Content'
                     name='message'
                     value={this.state.reply}
                     onChange={this.onReplyChange}
@@ -182,6 +243,92 @@ class MessagePage extends Component {
                 Send
               </Button>
             </form>
+
+            <Modal show = {this.state.showDecrypt} onHide={handleClose} backdrop="static">
+              <Modal.Header closeButton>
+                <Modal.Title>Decryption</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                  <ControlLabel>
+                    Key
+                  </ControlLabel>
+                  <FormGroup>
+                  <Dropzone
+                  disableClick
+                  style={{position: "relative"}}
+                  onDrop={this.onDropKey.bind(this)}
+                  onDragEnter={() => this.setState({dropzoneKeyActive: true})}
+                  onDragLeave={() => this.setState({dropzoneKeyActive: false})}
+                >
+                  {this.state.dropzoneKeyActive && <div style={dropzoneOverlayStyle}>
+                    Drag and drop files here to be read
+                  </div>}
+                    <FormControl
+                    type="text"
+                    value = {this.state.keyValue}
+                    placeholder="Enter Key or Drag File"
+                    onChange={this.handleChangeKey}
+                    />
+                    <FormControl
+                    componentClass='textarea'
+                    value = {this.state.plaintext}
+                    disabled={true}
+                    onChange={this.handleChangeKey}
+                    />
+                  </Dropzone>
+                </FormGroup>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                  Close
+                </Button>
+                <Button variant="primary" onClick={this.handleDecrypt}>
+                  Decrypt
+                </Button>
+              </Modal.Footer>
+            </Modal>
+
+            <Modal show = {this.state.showSign} onHide={handleClose} backdrop="static">
+              <Modal.Header closeButton>
+                <Modal.Title>Signature Confirmation</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <FormGroup>
+                  <ControlLabel>
+                      Is Signiture Same
+                  </ControlLabel>
+                  <Dropzone
+                  disableClick
+                  style={{position: "relative"}}
+                  onDrop={this.onDropKeySign.bind(this)}
+                  onDragEnter={() => this.setState({dropzoneKeyActive: true})}
+                  onDragLeave={() => this.setState({dropzoneKeyActive: false})}
+                >
+                  <FormControl
+                    type="text"
+                    value = {this.state.signKey}
+                    placeholder="Enter Key or Drag File"
+                    onChange={this.handleChangeSignKey}
+                    />
+                  </Dropzone>
+                </FormGroup>
+                <FormGroup>  
+                  <FormControl
+                    type="text"
+                    value = {this.state.isSignature}
+                    disabled="true"
+                    />
+                </FormGroup>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                  Close
+                </Button>
+                <Button variant="secondary" onClick={this.handleSigniture}>
+                  Match
+                </Button>
+              </Modal.Footer>
+            </Modal>
           </PageWrapper>
         )}
       </div>

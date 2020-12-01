@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
+import React, {Component,createRef} from 'react'
 import {connect} from 'react-redux'
 import {push} from 'react-router-redux'
-import {Button, FormControl, FormGroup, ListGroup, ListGroupItem} from 'react-bootstrap'
+import {Button, FormControl, FormGroup, ListGroup, ListGroupItem, Modal, ControlLabel, Checkbox} from 'react-bootstrap'
 import Dropzone from 'react-dropzone'
 
 import {sendMessage} from '../../../actions/sendActionCreators'
@@ -14,10 +14,13 @@ class SendPage extends Component {
     super(props);
 
     this.state = this.getInitialState();
-
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.removeAttachment = this.removeAttachment.bind(this);
+    this.handleChangeKey = this.handleChangeKey.bind(this);
+    this.handleChangeSignKey = this.handleChangeSignKey.bind(this);
+    this.handleEncrypt = this.handleEncrypt.bind(this);
+    this.handleSigniture = this.handleSigniture.bind(this)
   }
 
   getInitialState() {
@@ -26,7 +29,14 @@ class SendPage extends Component {
       subject: '',
       message: '',
       attachments: [],
-      dropzoneActive: false
+      dropzoneActive: false,
+      dropzoneKeyActive:false,
+      showEncrypt:false,
+      showSign:false,
+      keyValue:"",
+      signKey:"",
+      sign:""
+      
     };
   }
 
@@ -41,6 +51,7 @@ class SendPage extends Component {
     const {to, subject, message, attachments} = this.state;
     this.props.sendMessage(to, subject, message, attachments);
     this.setState(this.getInitialState())
+    this.props.moveToHome();
   }
 
   onDrop(files) {
@@ -64,15 +75,55 @@ class SendPage extends Component {
     }
   }
 
+  onDropKey(files) {
+    this.setState({dropzoneKeyActive: false});
+    for (let i = 0; i < files.length; i++) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.setState({
+          keyValue:reader.result
+        })
+      };
+      reader.readAsText(files[i]);
+    }
+  }
+
+  onDropKeySign(files) {
+    this.setState({dropzoneKeyActive: false});
+    for (let i = 0; i < files.length; i++) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.setState({
+          signKey:reader.result
+        })
+      };
+      reader.readAsText(files[i]);
+    }
+  }
+
+  handleEncrypt(){
+    
+  }
+
+  handleSigniture(){
+
+  }
+
   removeAttachment(file) {
     this.setState({
       attachments: this.state.attachments.filter(item => item !== file)
     })
   }
 
+  handleChangeKey(e){
+    this.setState({keyValue:e.target.value})
+  }
+  handleChangeSignKey(e){
+    this.setState({signKey:e.target.value})
+  }
   render() {
     let dropzoneRef;
-
+    const handleClose =()=>this.setState({showEncrypt:false,showSign:false})
     const dropzoneOverlayStyle = {
       position: 'absolute',
       top: 0,
@@ -83,10 +134,26 @@ class SendPage extends Component {
       background: 'rgba(0,0,0,0.5)',
       textAlign: 'center',
       color: '#fff'
+    
     };
+    
 
     return (
       <PageWrapper title='Send - Gmail'>
+        <FormGroup>
+          <Button
+            onClick ={()=> this.setState({showEncrypt:true})}
+          >
+            Encrypt
+          </Button>
+          <Button
+            onClick ={()=> this.setState({showSign:true})}
+            style = {{marginLeft:"1vw"}}
+          >
+            Create Signiture
+          </Button>
+        </FormGroup>
+        
         <form onSubmit={this.onSubmit}>
           <FormGroup>
             <FormControl
@@ -107,9 +174,7 @@ class SendPage extends Component {
               required
             />
           </FormGroup>
-          <FormGroup>
-
-          </FormGroup>
+          
           <FormGroup>
             <Dropzone
               disableClick
@@ -122,7 +187,7 @@ class SendPage extends Component {
               }}
             >
               {this.state.dropzoneActive && <div style={dropzoneOverlayStyle}>
-                Перетащите сюда файлы, чтобы прикрепить их к письму...
+                Drag and drop files here to attach them to your email ...
               </div>}
               <FormControl
                 placeholder='Content'
@@ -135,7 +200,7 @@ class SendPage extends Component {
               />
             </Dropzone>
           </FormGroup>
-
+          
           <ListGroup>
             {this.state.attachments.map((file, index) => (
               <ListGroupItem key={index} listItem={true}>
@@ -167,6 +232,78 @@ class SendPage extends Component {
             </Button>
           </FormGroup>
         </form>
+        <Modal show = {this.state.showEncrypt} onHide={handleClose} backdrop="static">
+          <Modal.Header closeButton>
+            <Modal.Title>Encryption</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+              <ControlLabel>
+                  Key
+              </ControlLabel>
+              <FormGroup>  
+                <Dropzone
+                disableClick
+                style={{position: "relative"}}
+                onDrop={this.onDropKey.bind(this)}
+                onDragEnter={() => this.setState({dropzoneKeyActive: true})}
+                onDragLeave={() => this.setState({dropzoneKeyActive: false})}
+              >
+                {this.state.dropzoneKeyActive && <div style={dropzoneOverlayStyle}>
+                  Drag and drop files here to be read
+                </div>}
+                  <FormControl
+                  type="text"
+                  value = {this.state.keyValue}
+                  placeholder="Enter Key or Drag File"
+                  onChange={this.handleChangeKey}
+                  />
+                </Dropzone> 
+              </FormGroup>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={this.handleEncrypt}>
+              Encrypt
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        <Modal show = {this.state.showSign} onHide={handleClose} backdrop="static">
+          <Modal.Header closeButton>
+            <Modal.Title>Signature Creation</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <FormGroup>  
+              <ControlLabel>
+                  Enter Key
+              </ControlLabel>
+              <Dropzone
+                disableClick
+                style={{position: "relative"}}
+                onDrop={this.onDropKeySign.bind(this)}
+                onDragEnter={() => this.setState({dropzoneKeyActive: true})}
+                onDragLeave={() => this.setState({dropzoneKeyActive: false})}
+              >
+                <FormControl
+                  type="text"
+                  value = {this.state.signKey}
+                  placeholder="Enter Key or Drag File"
+                  onChange={this.handleChangeSignKey}
+                  />
+              </Dropzone>
+            </FormGroup>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="secondary" onClick={this.handleSigniture}>
+              Generate Key
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </PageWrapper>
     );
   }
