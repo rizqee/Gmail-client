@@ -7,7 +7,9 @@ import Dropzone from 'react-dropzone'
 import {sendMessage} from '../../../actions/sendActionCreators'
 import filesize from 'filesize'
 import {PageWrapper} from "../PageWrapper";
+import SendPageService from "./SendPageService"
 
+const sendPage = new SendPageService();
 class SendPage extends Component {
 
   constructor(props) {
@@ -102,7 +104,25 @@ class SendPage extends Component {
   }
 
   handleEncrypt(){
-    
+    var plaintext = []
+    plaintext.push({
+      key:this.state.keyValue,
+      text:this.state.message,
+      mode:"ECB",
+      padding:true
+    })
+    const contentdata = plaintext;
+    sendPage.encryptMessage(contentdata).then(respnse=>{
+      const data = respnse.data;
+      if(data.message === 'OK'){
+        const dataResponse = data.result;
+        this.setState({message:dataResponse.ciphertext})
+      }
+      
+    }).catch(error=>{
+      console.log(error)
+    })
+    this.setState({showEncrypt:false})
   }
 
   handleSigniture(){

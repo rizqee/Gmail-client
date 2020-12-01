@@ -9,7 +9,9 @@ import {PageWrapper} from '../PageWrapper'
 import {downloadAttachment, getMessage} from '../../../actions/messageActionCreators'
 import {reply} from '../../../actions/sendActionCreators'
 import {getHeader} from '../../../messageMethods'
+import MessagePageService from "./MessagePageService"
 
+const messagePage = new MessagePageService()
 class MessagePage extends Component {
 
   constructor(props) {
@@ -64,6 +66,25 @@ class MessagePage extends Component {
   }
 
   handleDecrypt(){
+    var ciphertext = []
+    ciphertext.push({
+      key:this.state.keyValue,
+      text:this.props.message.payload.htmlBody,
+      mode:"ECB",
+      padding:"true"
+    })
+    const contentdata = ciphertext;
+    messagePage.decryptMessage(contentdata).then(respnse=>{
+      const data = respnse.data;
+      if(data.message === 'OK'){
+        const dataResponse = data.result;
+        this.setState({plaintext:dataResponse.plaintext})
+      }
+      
+    }).catch(error=>{
+      console.log(error)
+    })
+    this.setState({showDecrypt:false})
     
   }
   handleSigniture(){
@@ -273,7 +294,6 @@ class MessagePage extends Component {
                     componentClass='textarea'
                     value = {this.state.plaintext}
                     disabled={true}
-                    onChange={this.handleChangeKey}
                     />
                   </Dropzone>
                 </FormGroup>
