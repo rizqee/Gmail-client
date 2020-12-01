@@ -90,18 +90,18 @@ class MessagePage extends Component {
     return (
       <div>
         {this.props.isLoaded && (
-          <PageWrapper title='Просмотр письма - Gmail'>
+          <PageWrapper title='Message - Gmail'>
             <Panel header={
               <div>
-                <span><i>От:</i> {getHeader(this.props.message, 'From')}</span>
+                <span><i>From:</i> {getHeader(this.props.message, 'From')}</span>
                 <hr style={{margin: '5px'}}/>
-                <span><i>Кому:</i> {getHeader(this.props.message, 'To')}</span>
+                <span><i>To:</i> {getHeader(this.props.message, 'To')}</span>
                 <hr style={{margin: '5px'}}/>
-                <span><i>Тема:</i> {getHeader(this.props.message, 'Subject')}</span>
+                <span><i>Subject:</i> {getHeader(this.props.message, 'Subject')}</span>
               </div>
             }>
               {this.props.message.payload.htmlBody === '' ? (
-                <i>Пустое сообщение</i>
+                <i>Empty Message</i>
               ) : (
                 renderHtml(this.props.message.payload.htmlBody)
               )}
@@ -141,7 +141,7 @@ class MessagePage extends Component {
                     Перетащите сюда файлы, чтобы прикрепить их к письму...
                   </div>}
                   <FormControl
-                    placeholder='Напишите ваш ответ здесь'
+                    placeholder='Conent'
                     name='message'
                     value={this.state.reply}
                     onChange={this.onReplyChange}
@@ -170,7 +170,7 @@ class MessagePage extends Component {
               <Button onClick={() => {
                 dropzoneRef.open()
               }}>
-                Приложить файлы
+                Attach File
               </Button>
 
               <Button
@@ -179,7 +179,7 @@ class MessagePage extends Component {
                 bsStyle='primary'
                 style={{marginBottom: '100px'}}
               >
-                Ответить
+                Send
               </Button>
             </form>
           </PageWrapper>

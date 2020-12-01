@@ -163,7 +163,7 @@ class SendPage extends Component {
               type='submit'
               disabled={this.props.isLoading}
             >
-              Submit
+              Send
             </Button>
           </FormGroup>
         </form>

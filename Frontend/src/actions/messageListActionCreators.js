@@ -35,26 +35,29 @@ const receiveMessageList = (messageListName, pageToken, onRequest, onSuccess) =>
     let promise = new Promise((resolve, reject) => {
       let messages = [];
       let counter = response.messages?response.messages.length:0;
-      response.messages.forEach(message => {
-        gapi.client.gmail.users.messages.get({
-          userId: 'me',
-          id: message.id
-        }).then(({result}) => {
-          messages.push({
-            id: result.id,
-            snippet: result.snippet,
-            isUnread: result.labelIds.includes('UNREAD'),
-            payload: {
-              headers: result.payload.headers
+      if (counter) {
+        response.messages.forEach(message => {
+          gapi.client.gmail.users.messages.get({
+            userId: 'me',
+            id: message.id
+          }).then(({result}) => {
+            messages.push({
+              id: result.id,
+              snippet: result.snippet,
+              isUnread: result.labelIds.includes('UNREAD'),
+              payload: {
+                headers: result.payload.headers
+              }
+            });
+            if (--counter === 0) {
+              resolve(messages);
             }
-          });
-          if (--counter === 0) {
-            resolve(messages);
-          }
-        }).catch(e => {
-          reject(e);
-        })
-      });
+          }).catch(e => {
+            reject(e);
+          })
+        });
+      }
+      
     });
 
     promise.then(messages => {
