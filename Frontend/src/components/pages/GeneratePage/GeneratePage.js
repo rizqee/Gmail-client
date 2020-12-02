@@ -20,7 +20,7 @@ class GeneratePage extends Component{
         generatePageService.generateSignKey().then(response=>{
             const data = response.data
             this.setState({
-                publicKey:data.pub_x.toString()+","+data.pub_x.toString(),
+                publicKey:data.pub_x.toString()+","+data.pub_y.toString(),
                 privateKey:data.pri.toString()
             })
         }).catch(error=>{

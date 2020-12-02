@@ -101,8 +101,8 @@ class MessagePage extends Component {
       pub_x:pub_key[0],
       pub_y:pub_key[1],
       message:message,
-      r:sign[0],
-      s:sign[1]
+      r:sign[0].replace(/\n/g,""),
+      s:sign[1].replace("\n","")
     })
     const contentdata = payload[0]
     messagePage.verifySign(contentdata).then(response=>{
@@ -163,6 +163,8 @@ class MessagePage extends Component {
 
   render() {
     let dropzoneRef;
+    let dropzoneKeyRef;
+    let dropzoneSignRef;
     const handleClose =()=>this.setState({showDecrypt:false,showSign:false})
     const dropzoneOverlayStyle = {
       position: 'absolute',
@@ -302,6 +304,9 @@ class MessagePage extends Component {
                   onDrop={this.onDropKey.bind(this)}
                   onDragEnter={() => this.setState({dropzoneKeyActive: true})}
                   onDragLeave={() => this.setState({dropzoneKeyActive: false})}
+                  ref={(node) => {
+                    dropzoneKeyRef = node;
+                  }}
                 >
                   {this.state.dropzoneKeyActive && <div style={dropzoneOverlayStyle}>
                     Drag and drop files here to be read
@@ -311,16 +316,23 @@ class MessagePage extends Component {
                     value = {this.state.keyValue}
                     placeholder="Enter Key or Drag File"
                     onChange={this.handleChangeKey}
+                    
                     />
                     <FormControl
                     componentClass='textarea'
                     value = {this.state.plaintext}
                     disabled={true}
+                    
                     />
                   </Dropzone>
                 </FormGroup>
               </Modal.Body>
               <Modal.Footer>
+                <Button onClick={() => {
+                    dropzoneKeyRef.open()
+                }}>
+                  Select file
+                </Button>
                 <Button variant="secondary" onClick={handleClose}>
                   Close
                 </Button>
@@ -345,6 +357,9 @@ class MessagePage extends Component {
                   onDrop={this.onDropKeySign.bind(this)}
                   onDragEnter={() => this.setState({dropzoneKeyActive: true})}
                   onDragLeave={() => this.setState({dropzoneKeyActive: false})}
+                  ref={(node) => {
+                    dropzoneSignRef = node;
+                  }}
                 >
                   <FormControl
                     type="text"
@@ -363,6 +378,11 @@ class MessagePage extends Component {
                 </FormGroup>
               </Modal.Body>
               <Modal.Footer>
+              <Button onClick={() => {
+                  dropzoneSignRef.open()
+                }}>
+                  Select file
+                </Button>
                 <Button variant="secondary" onClick={handleClose}>
                   Close
                 </Button>
