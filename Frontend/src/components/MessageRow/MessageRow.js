@@ -25,7 +25,9 @@ const MessageRow = ({deleteMessage, message}) => (
             {getHeader(message, 'From')}
           </Col>
           <Col sm={8}>
-            <b>{getHeader(message, 'Subject')}</b> - {renderHtml(message.snippet)}
+            <span style={{whiteSpace:"pre-line",wordWrap:"break-word"}}>
+              <b>{getHeader(message, 'Subject')}</b> - {renderHtml(message.snippet)}
+            </span>
           </Col>
           <Col sm={1}>
             <i>
