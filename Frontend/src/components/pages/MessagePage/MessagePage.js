@@ -96,7 +96,7 @@ class MessagePage extends Component {
     var message = this.props.message.payload.htmlBody.substring(0,this.props.message.payload.htmlBody.length-2)
     var splitMessage = message.split("#################")
     message = splitMessage[0].substring(0,splitMessage[0].length-2)
-    if(splitMessage.length>0){
+    if(splitMessage.length>1){
       var sign = splitMessage[1].split(",")
       var pub_key = this.state.signKey.split(",")
       payload.push({
