@@ -187,7 +187,7 @@ class MessagePage extends Component {
                 <span><i>Subject:</i> {getHeader(this.props.message, 'Subject')}</span>
               </div>
             }>
-              <span style={{whiteSpace:"pre-line"}}>
+              <span style={{whiteSpace:"pre-line",wordWrap:"break-word"}}>
                 {this.props.message.payload.htmlBody === '' ? (
                   <i>Empty Message</i>
                 ) : (
