@@ -10,6 +10,27 @@ import {PageWrapper} from "../PageWrapper";
 import SendPageService from "./SendPageService"
 
 const sendPage = new SendPageService();
+function fixedHex(number, length){
+  var str = number.toString(16).toUpperCase();
+  while(str.length < length)
+      str = "0" + str;
+  return str;
+}
+
+/* Creates a unicode literal based on the string */    
+function unicodeLiteral(str){
+  var i;
+  var result = "";
+  for( i = 0; i < str.length; ++i){
+      /* You should probably replace this by an isASCII test */
+      if(str.charCodeAt(i) > 126 || str.charCodeAt(i) < 32)
+          result += "\\u" + fixedHex(str.charCodeAt(i),4);
+      else
+          result += str[i];
+  }
+
+  return result;
+}
 class SendPage extends Component {
 
   constructor(props) {
@@ -111,18 +132,17 @@ class SendPage extends Component {
       mode:"ECB",
       padding:true
     })
-    const contentdata = plaintext;
-    sendPage.encryptMessage(contentdata).then(respnse=>{
-      console.log("masuk")
-      const data = respnse.data;
-      if(data.message === 'OK'){
-        const dataResponse = data.result;
-        this.setState({message:dataResponse.ciphertext})
-      }
-      
-    }).catch(error=>{
-      console.log(error)
-    })
+    const contentdata = plaintext[0];
+    if(this.state.keyValue !=""){
+      sendPage.encryptMessage(contentdata).then(response=>{
+        console.log("masuk")
+        const data =  response.data;
+        this.setState({message:unicodeLiteral(data.ciphertext)})
+      }).catch(error=>{
+        console.log(error)
+      })
+    }
+    
     this.setState({showEncrypt:false})
   }
 

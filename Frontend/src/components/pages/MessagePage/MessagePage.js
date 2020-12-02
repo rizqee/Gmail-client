@@ -12,6 +12,7 @@ import {getHeader} from '../../../messageMethods'
 import MessagePageService from "./MessagePageService"
 
 const messagePage = new MessagePageService()
+
 class MessagePage extends Component {
 
   constructor(props) {
@@ -67,23 +68,23 @@ class MessagePage extends Component {
 
   handleDecrypt(){
     var ciphertext = []
+    var message = this.props.message.payload.htmlBody.substring(0,this.props.message.payload.htmlBody.length-2)
     ciphertext.push({
       key:this.state.keyValue,
-      text:this.props.message.payload.htmlBody,
+      text:message.replace(/\\u([0-9a-fA-F]{4})/g, (m,cc)=>String.fromCharCode("0x"+cc)),
       mode:"ECB",
       padding:"true"
     })
-    const contentdata = ciphertext;
-    messagePage.decryptMessage(contentdata).then(respnse=>{
-      const data = respnse.data;
-      if(data.message === 'OK'){
-        const dataResponse = data.result;
-        this.setState({plaintext:dataResponse.plaintext})
-      }
-      
-    }).catch(error=>{
-      console.log(error)
-    })
+    const contentdata = ciphertext[0];
+    if(this.state.keyValue!=""){
+      messagePage.decryptMessage(contentdata).then(response=>{
+        const data = response.data;
+        this.setState({plaintext:data.plaintext})
+      }).catch(error=>{
+        console.log(error)
+      })
+    }
+    
     
   }
   handleSigniture(){

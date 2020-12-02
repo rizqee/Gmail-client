@@ -150,8 +150,8 @@ def get_seed(password):
     seed = 0
     for c in password:
         seed += ord(c)
-        print(ord(c))
-    print(seed)
+        
+    
     return seed
 
 def get_shift(i):
@@ -209,19 +209,16 @@ class traveler():
         self.seed = get_seed(self.password)
         random.seed(self.seed)
         self.num_of_loop = random.randint(8, 12)
-        print("num of loop " , self.num_of_loop)
         
-        if padding and action==ENCRYPT:
+        
+        if padding and action == ENCRYPT:
             self.addPadding()
         elif len(self.text) % 8 != 0: # If not padding specified data size must be multiple of 8 bytes
             raise "Data size should be multiple of 8"
         
         self.generatekeys() #Generate all the keys
         self.generatepmat()
-        print("Mat P")
-        print(self.p_mat)
-        print("Mat P Inverse")
-        print(self.p_mat_inverse)
+        
 
         self.num_of_keys = len(self.password) // 8
         text_blocks = nsplit(self.text, 8) #Split the text in blocks of 8 bytes so 64 bits
@@ -371,14 +368,12 @@ Where's the peck of pickled peppers Peter Piper picked"
     t = traveler()
     r = t.encrypt(key,text, padding=True, mode=CBC)
     r2 = t.decrypt(key,r, padding=True, mode=CBC)
-    print("Ciphered: ")
+    
     for c in r:
         print(ord(c), end=' ')
-    print()
-    print("Ciphered (Hex): ")
+    
     for c in r:
         hx = hex(ord(c))[2:]
         while len(hx) < 2:
            hx = '0' + hx
-        print(hx, end='')  
-    print("Deciphered: %s" % r2)
+        

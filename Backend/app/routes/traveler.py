@@ -12,6 +12,7 @@ traveler_blueprint = Blueprint('traveler', __name__)
 def encrypt():
     key = request.json['key']
     text = request.json['text']
+    print(text)
     mode = request.json['mode']
     padding = request.json['padding']
     t = actions.traveler()
@@ -24,6 +25,7 @@ def encrypt():
         mode = actions.ECB
     
     r = t.encrypt(key,text, padding=padding, mode=mode)
+    print(r)
 
     return jsonify({ "ciphertext" : r }), 200
 
@@ -32,6 +34,7 @@ def encrypt():
 def decrypt():
     key = request.json['key']
     text = request.json['text']
+    print(text)
     mode = request.json['mode']
     padding = request.json['padding']
     t = actions.traveler()
@@ -44,5 +47,6 @@ def decrypt():
         mode = actions.ECB
     
     r = t.decrypt(key,text, padding=padding, mode=mode)
+    print(r)
 
     return jsonify({ "plaintext" : r }), 200
