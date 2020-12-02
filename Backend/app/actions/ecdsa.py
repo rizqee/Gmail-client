@@ -2,19 +2,26 @@ import random
 #from actions import keccak as keccak
 import keccak
 ## DOMAIN PARAMETERS
-# DP_a = 0x0000000000000000000000000000000000000000000000000000000000000000
-# DP_b = 0x0000000000000000000000000000000000000000000000000000000000000007
-# DP_p = 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f
-# DP_n = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
-# DP_xG = 0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
-# DP_yG = 0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8
+DP_a = 0x0000000000000000000000000000000000000000000000000000000000000000
+DP_b = 0x0000000000000000000000000000000000000000000000000000000000000007
+DP_p = 0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f
+DP_n = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
+DP_xG = 0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+DP_yG = 0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8
 
-DP_a = 1
-DP_b = 0
-DP_p = 13
-DP_n = 13
-DP_xG = 2
-DP_yG = 6
+_a = 0x0000000000000000000000000000000000000000000000000000000000000000
+_b = 0x0000000000000000000000000000000000000000000000000000000000000007
+_p = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F
+_Gx = 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798
+_Gy = 0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8
+_r = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
+
+# DP_a = 1
+# DP_b = 0
+# DP_p = 13
+# DP_n = 13
+# DP_xG = 2
+# DP_yG = 6
 
 def egcd(a, b):
     x,y, u,v = 0,1, 1,0
@@ -50,11 +57,11 @@ def ec_addition(x1, y1, x2, y2):
     return x_result, y_result
 
 def ec_multiplication(k, x, y):
-    print("k", k)
-    print("x", x)
-    print("y", y)
+    # print("k", k)
+    # print("x", x)
+    # print("y", y)
     binary_k = bin(k)[2:]
-    print("binary_k", binary_k)
+    # ?print("binary_k", binary_k)
     temp_x, temp_y = x, y
     x_result, y_result = "none", "none"
     for i in range(len(binary_k)):
@@ -65,7 +72,7 @@ def ec_multiplication(k, x, y):
                 x_result, y_result = x, y
             else:
                 x_result, y_result = ec_addition(x_result, y_result, temp_x, temp_y)    
-        print(i, x_result, y_result)
+        # print(i, x_result, y_result)
     return x_result, y_result
 
 def hash_to_integer(hash):
@@ -96,9 +103,12 @@ class ecdsa:
         valid = False
         d = random.randint(1, DP_n-1)
         while not valid:
+            if d == DP_n-1:
+                d = 1
+            else:
+                d += 1
             xQ, yQ = ec_multiplication(d, DP_xG, DP_yG)
             valid = check_public_key_validity(xQ, yQ)
-            d += 1
         return xQ, yQ, d
 
     def generate_signature(self, message, d):
@@ -108,20 +118,21 @@ class ecdsa:
             while k_inverse == None:
                 r = 0
                 while r == 0:
-                    k = 9 #random.randint(1, DP_n-1)
+                    k = random.randint(1, DP_n-1)
                     x1, y1 = ec_multiplication(k, DP_xG, DP_yG)
+                    print("---this is the---")
                     print(x1, y1)
-                    x1 = int(x1)
+                    x1 = x1
                     r = x1 % DP_n
                 k_inverse = modinv(k, DP_n)
             keccak_class = keccak.Keccak()
             message_hash = keccak_class.hashOutputBinary(message)
             e = hash_to_integer(message_hash) % DP_n
-            s = (k_inverse * (e + d * r)) % DP_n
+            s = (k_inverse * (e + (d * r))) % DP_n
         return r, s
 
-    def verify_signature(self, message, xQ, yQ, r, s, d):
-        if r < 1 or r > DP_n or s < 1 or s > DP_n:
+    def verify_signature(self, message, xQ, yQ, r, s):
+        if r < 1 or r >= DP_n or s < 1 or s >= DP_n:
             return False
         keccak_class = keccak.Keccak()
         message_hash = keccak_class.hashOutputBinary(message)
@@ -133,9 +144,11 @@ class ecdsa:
         temp_x2, temp_y2 = ec_multiplication(u2, xQ, yQ)
         print(temp_x1, temp_y1, temp_x2, temp_y2)
         xX, yX = ec_addition(temp_x1, temp_y1, temp_x2, temp_y2)
+        print("--same with--")
+        print(xX, yX)
         if xX == "origin" or yX == "origin":
           return False
-        x = int(xX)
+        x = xX
         v = x % DP_n
         print(v)
         print(r)
@@ -147,7 +160,7 @@ if __name__ == "__main__":
     e = ecdsa()
     message = "Test Message Pls Work Onegai"
     wrong_message = "Test Message Ples Work Onegai"
-    xQ, yQ, d = 9, 7, 3 #e.generate_key_pair()
+    xQ, yQ, d = e.generate_key_pair()
     print(xQ, yQ, d)
     r, s = e.generate_signature(message, d)
     print("--r--")
@@ -155,5 +168,5 @@ if __name__ == "__main__":
     print("--s--")
     print(s)
     print("--result--")
-    print(e.verify_signature(message, xQ, yQ, r, s, d))
+    print(e.verify_signature(message, xQ, yQ, r, s))
 
