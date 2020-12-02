@@ -355,7 +355,7 @@ class MessagePage extends Component {
               </Modal.Header>
               <Modal.Body>
                   <ControlLabel>
-                    SIGNITURE IS FALSE
+                    SIGNATURE IS FALSE
                   </ControlLabel>
               </Modal.Body>
               <Modal.Footer>
