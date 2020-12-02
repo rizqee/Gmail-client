@@ -70,6 +70,8 @@ class MessagePage extends Component {
   handleDecrypt(){
     var ciphertext = []
     var message = this.props.message.payload.htmlBody.substring(0,this.props.message.payload.htmlBody.length-2)
+    var splitMessage = message.split("#################")
+    message = splitMessage[0].substring(0,splitMessage[0].length-2)
     ciphertext.push({
       key:this.state.keyValue,
       text:message.replace(/\\u([0-9a-fA-F]{4})/g, (m,cc)=>String.fromCharCode("0x"+cc)),
