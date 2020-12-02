@@ -7,10 +7,13 @@ import os
 
 import config
 from routes.traveler import traveler_blueprint
+from routes.ecdsa import ecdsa_blueprint
 
 app = Flask(__name__)
+app.config['JSON_AS_ASCII'] = False
 
 app.register_blueprint(traveler_blueprint, url_prefix='/traveler')
+app.register_blueprint(ecdsa_blueprint, url_prefix='/ecdsa')
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
