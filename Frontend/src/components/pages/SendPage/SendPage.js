@@ -180,6 +180,8 @@ class SendPage extends Component {
   }
   render() {
     let dropzoneRef;
+    let dropzoneKeyRef;
+    let dropzoneSignRef;
     const handleClose =()=>this.setState({showEncrypt:false,showSign:false})
     const dropzoneOverlayStyle = {
       position: 'absolute',
@@ -304,6 +306,9 @@ class SendPage extends Component {
                 onDrop={this.onDropKey.bind(this)}
                 onDragEnter={() => this.setState({dropzoneKeyActive: true})}
                 onDragLeave={() => this.setState({dropzoneKeyActive: false})}
+                ref={(node) => {
+                  dropzoneKeyRef = node;
+                }}
               >
                 {this.state.dropzoneKeyActive && <div style={dropzoneOverlayStyle}>
                   Drag and drop files here to be read
@@ -318,6 +323,11 @@ class SendPage extends Component {
               </FormGroup>
           </Modal.Body>
           <Modal.Footer>
+            <Button onClick={() => {
+              dropzoneKeyRef.open()
+            }}>
+              Select file
+            </Button>
             <Button variant="secondary" onClick={handleClose}>
               Cancel
             </Button>
@@ -342,6 +352,9 @@ class SendPage extends Component {
                 onDrop={this.onDropKeySign.bind(this)}
                 onDragEnter={() => this.setState({dropzoneKeyActive: true})}
                 onDragLeave={() => this.setState({dropzoneKeyActive: false})}
+                ref={(node) => {
+                  dropzoneSignRef = node;
+                }}
               >
                 <FormControl
                   type="text"
@@ -353,6 +366,11 @@ class SendPage extends Component {
             </FormGroup>
           </Modal.Body>
           <Modal.Footer>
+          <Button onClick={() => {
+              dropzoneSignRef.open()
+            }}>
+              Select file
+            </Button>
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>

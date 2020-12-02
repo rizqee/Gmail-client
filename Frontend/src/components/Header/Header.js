@@ -27,6 +27,9 @@ const Header = (props) => (
         <LinkContainer to='/send'>
           <NavItem>send</NavItem>
         </LinkContainer>
+        <LinkContainer to='/generate'>
+          <NavItem>generate ecdsa key</NavItem>
+        </LinkContainer>
       </Nav>
       <Navbar.Form pullRight>
         <Button onClick={props.unauthorize}>

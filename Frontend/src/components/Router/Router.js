@@ -7,6 +7,7 @@ import {InboxPage} from '../pages/InboxPage'
 import {SentPage} from '../pages/SentPage'
 import {MessagePage} from '../pages/MessagePage'
 import {SendPage} from '../pages/SendPage'
+import {GeneratePage} from '../pages/GeneratePage'
 
 export default () => (
   <ConnectedRouter history={history}>
@@ -16,6 +17,7 @@ export default () => (
         <Route exact path='/sent' render={SentPage}/>
         <Route exact path='/messages/:id' component={MessagePage}/>
         <Route exact path='/send' component={SendPage}/>
+        <Route exact path='/generate' component={GeneratePage}/>
         <Route path='/' render={() => <Redirect to='/inbox'/>}/>
       </Switch>
     </div>

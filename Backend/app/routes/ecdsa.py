@@ -15,9 +15,9 @@ def generate_key():
     pub_x, pub_y, pri = e.generate_key_pair()
 
     return jsonify({
-        "pub_x" : pub_x,
-        "pub_y" : pub_y, 
-        "pri" : pri
+        "pub_x" : str(pub_x),
+        "pub_y" : str(pub_y), 
+        "pri" : str(pri)
         }), 200
 
 @ecdsa_blueprint.route('/sign', methods=["POST"])
