@@ -113,6 +113,7 @@ class SendPage extends Component {
     })
     const contentdata = plaintext;
     sendPage.encryptMessage(contentdata).then(respnse=>{
+      console.log("masuk")
       const data = respnse.data;
       if(data.message === 'OK'){
         const dataResponse = data.result;
