@@ -113,7 +113,8 @@ class ecdsa:
             keccak_class = keccak.Keccak()
             message_hash = keccak_class.hashOutputBinary(message)
             e = hash_to_integer(message_hash) % DP_n
-            s = (k_inverse * (e + (d * r))) % DP_n
+            print(type(e),type(k_inverse),type(d),type(r))
+            s = (k_inverse * (e + ((d * r)))) % DP_n
         return r, s
 
     def verify_signature(self, message, xQ, yQ, r, s):

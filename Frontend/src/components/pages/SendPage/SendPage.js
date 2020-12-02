@@ -10,6 +10,7 @@ import {PageWrapper} from "../PageWrapper";
 import SendPageService from "./SendPageService"
 
 const sendPage = new SendPageService();
+
 function fixedHex(number, length){
   var str = number.toString(16).toUpperCase();
   while(str.length < length)
@@ -135,7 +136,6 @@ class SendPage extends Component {
     const contentdata = plaintext[0];
     if(this.state.keyValue !=""){
       sendPage.encryptMessage(contentdata).then(response=>{
-        console.log("masuk")
         const data =  response.data;
         this.setState({message:unicodeLiteral(data.ciphertext)})
       }).catch(error=>{
@@ -147,7 +147,23 @@ class SendPage extends Component {
   }
 
   handleSigniture(){
+    var payload = [];
+    payload.push({
+      pri:this.state.signKey,
+      message:this.state.message
+    })
+    const contentdata = payload[0];
+    if(this.state.signKey !=""){
+      sendPage.generateSign(contentdata).then(response=>{
+        const data =  response.data;
+        let signedMessage = this.state.message + "\n\n" + "#################" + "\n\n" + data.r.toString()+","+data.s.toString()+"\n"
+        this.setState({message:signedMessage})
 
+      }).catch(error=>{
+        console.log(error)
+      })
+    }
+    
   }
 
   removeAttachment(file) {
@@ -341,7 +357,7 @@ class SendPage extends Component {
               Close
             </Button>
             <Button variant="secondary" onClick={this.handleSigniture}>
-              Generate Key
+              Generate Signiture
             </Button>
           </Modal.Footer>
         </Modal>

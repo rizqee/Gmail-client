@@ -37,7 +37,8 @@ class MessagePage extends Component {
       showSign:false,
       keyValue:"",
       signKey:"",
-      plaintext:""
+      plaintext:"",
+      isSignature:""
     };
   }
 
@@ -88,7 +89,24 @@ class MessagePage extends Component {
     
   }
   handleSigniture(){
-    this.setState({showSign:true})
+    var payload =[]
+    var message = this.props.message.payload.htmlBody.substring(0,this.props.message.payload.htmlBody.length-2)
+    var splitMessage = message.split("#################")
+    message = splitMessage[0].substring(0,splitMessage[0].length-2)
+    var sign = splitMessage[1].split(",")
+    var pub_key = this.state.signKey.split(",")
+    payload.push({
+      pub_x:pub_key[0],
+      pub_y:pub_key[1],
+      message:message,
+      r:sign[0],
+      s:sign[1]
+    })
+    const contentdata = payload[0]
+    messagePage.verifySign(contentdata).then(response=>{
+      const data = response.data;
+      this.setState({isSignature:data.verified})
+    })
   }
   onDropKey(files) {
     this.setState({dropzoneKeyActive: false});
@@ -169,11 +187,13 @@ class MessagePage extends Component {
                 <span><i>Subject:</i> {getHeader(this.props.message, 'Subject')}</span>
               </div>
             }>
-              {this.props.message.payload.htmlBody === '' ? (
-                <i>Empty Message</i>
-              ) : (
-                renderHtml(this.props.message.payload.htmlBody)
-              )}
+              <span style={{whiteSpace:"pre-line"}}>
+                {this.props.message.payload.htmlBody === '' ? (
+                  <i>Empty Message</i>
+                ) : (
+                  renderHtml(this.props.message.payload.htmlBody)
+                )}
+              </span>
               {this.props.message.payload.attachments.length ? (
                   <div>
                     <hr/>

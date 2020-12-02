@@ -27,11 +27,11 @@ def sign():
     pri = request.json['pri']
     message = request.json['message']
     
-    r, s = e.generate_signature(message, pri)
+    r, s = e.generate_signature(message, int(pri))
 
     return jsonify({
-        "r" : r,
-        "s" : s
+        "r" : str(r),
+        "s" : str(s)
         }), 200
 
 @ecdsa_blueprint.route('/verify', methods=["POST"])
@@ -44,7 +44,7 @@ def verify():
     r = request.json['r']
     s = request.json['s']
     
-    verified = e.verify_signature(message, pub_x, pub_y, r, s)
+    verified = e.verify_signature(message, int(pub_x), int(pub_y),int(r) ,int(s) )
 
     return jsonify({
         "verified" : verified
