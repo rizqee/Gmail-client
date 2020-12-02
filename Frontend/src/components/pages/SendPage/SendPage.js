@@ -44,7 +44,7 @@ class SendPage extends Component {
     this.handleChangeKey = this.handleChangeKey.bind(this);
     this.handleChangeSignKey = this.handleChangeSignKey.bind(this);
     this.handleEncrypt = this.handleEncrypt.bind(this);
-    this.handleSigniture = this.handleSigniture.bind(this)
+    this.handleSignature = this.handleSignature.bind(this)
   }
 
   getInitialState() {
@@ -146,7 +146,7 @@ class SendPage extends Component {
     this.setState({showEncrypt:false})
   }
 
-  handleSigniture(){
+  handleSignature(){
     var payload = [];
     payload.push({
       pri:this.state.signKey,
@@ -209,7 +209,7 @@ class SendPage extends Component {
             onClick ={()=> this.setState({showSign:true})}
             style = {{marginLeft:"1vw"}}
           >
-            Create Signiture
+            Create Signature
           </Button>
         </FormGroup>
         
@@ -374,8 +374,8 @@ class SendPage extends Component {
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
-            <Button variant="secondary" onClick={this.handleSigniture}>
-              Generate Signiture
+            <Button variant="secondary" onClick={this.handleSignature}>
+              Generate Signature
             </Button>
           </Modal.Footer>
         </Modal>

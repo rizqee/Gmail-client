@@ -24,7 +24,7 @@ class MessagePage extends Component {
     this.handleChangeKey = this.handleChangeKey.bind(this);
     this.handleChangeSignKey = this.handleChangeSignKey.bind(this);
     this.handleDecrypt = this.handleDecrypt.bind(this)
-    this.handleSigniture = this.handleSigniture.bind(this)
+    this.handleSignature = this.handleSignature.bind(this)
   }
 
   getInitialState() {
@@ -91,7 +91,7 @@ class MessagePage extends Component {
     
     
   }
-  handleSigniture(){
+  handleSignature(){
     var payload =[]
     var message = this.props.message.payload.htmlBody.substring(0,this.props.message.payload.htmlBody.length-2)
     var splitMessage = message.split("#################")
@@ -372,7 +372,7 @@ class MessagePage extends Component {
               <Modal.Body>
                 <FormGroup>
                   <ControlLabel>
-                      Is Signiture Same
+                      Is Signature Same
                   </ControlLabel>
                   <Dropzone
                   disableClick
@@ -409,7 +409,7 @@ class MessagePage extends Component {
                 <Button variant="secondary" onClick={handleClose}>
                   Close
                 </Button>
-                <Button variant="secondary" onClick={this.handleSigniture}>
+                <Button variant="secondary" onClick={this.handleSignature}>
                   Match
                 </Button>
               </Modal.Footer>
