@@ -163,7 +163,7 @@ class SendPage extends Component {
         console.log(error)
       })
     }
-    
+    this.setState({showSign:false})
   }
 
   removeAttachment(file) {

@@ -35,6 +35,7 @@ class MessagePage extends Component {
       dropzoneKeyActive:false,
       showDecrypt:false,
       showSign:false,
+      showErrorSign:false,
       keyValue:"",
       signKey:"",
       plaintext:"",
@@ -95,20 +96,26 @@ class MessagePage extends Component {
     var message = this.props.message.payload.htmlBody.substring(0,this.props.message.payload.htmlBody.length-2)
     var splitMessage = message.split("#################")
     message = splitMessage[0].substring(0,splitMessage[0].length-2)
-    var sign = splitMessage[1].split(",")
-    var pub_key = this.state.signKey.split(",")
-    payload.push({
-      pub_x:pub_key[0],
-      pub_y:pub_key[1],
-      message:message,
-      r:sign[0].replace(/\n/g,""),
-      s:sign[1].replace("\n","")
-    })
-    const contentdata = payload[0]
-    messagePage.verifySign(contentdata).then(response=>{
-      const data = response.data;
-      this.setState({isSignature:data.verified})
-    })
+    if(splitMessage.length>0){
+      var sign = splitMessage[1].split(",")
+      var pub_key = this.state.signKey.split(",")
+      payload.push({
+        pub_x:pub_key[0],
+        pub_y:pub_key[1],
+        message:message,
+        r:sign[0].replace(/\n/g,""),
+        s:sign[1].replace("\n","")
+      })
+      const contentdata = payload[0]
+      messagePage.verifySign(contentdata).then(response=>{
+        const data = response.data;
+        this.setState({isSignature:data.verified})
+      })
+    }
+    else{
+      this.setState({showSign:false})
+      this.setState({showErrorSign:true})
+    }
   }
   onDropKey(files) {
     this.setState({dropzoneKeyActive: false});
@@ -165,7 +172,7 @@ class MessagePage extends Component {
     let dropzoneRef;
     let dropzoneKeyRef;
     let dropzoneSignRef;
-    const handleClose =()=>this.setState({showDecrypt:false,showSign:false})
+    const handleClose =()=>this.setState({showDecrypt:false,showSign:false,showErrorSign:false})
     const dropzoneOverlayStyle = {
       position: 'absolute',
       top: 0,
@@ -338,6 +345,22 @@ class MessagePage extends Component {
                 </Button>
                 <Button variant="primary" onClick={this.handleDecrypt}>
                   Decrypt
+                </Button>
+              </Modal.Footer>
+            </Modal>
+
+            <Modal show = {this.state.showErrorSign} onHide={handleClose} backdrop="static">
+              <Modal.Header closeButton>
+                <Modal.Title>Error Signature</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                  <ControlLabel>
+                    SIGNITURE IS FALSE
+                  </ControlLabel>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                  Close
                 </Button>
               </Modal.Footer>
             </Modal>
